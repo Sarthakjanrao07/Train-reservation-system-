@@ -1,1 +1,127 @@
+import java.util.*;
+
+public class TrainReservationSystem {
+    private static final Map<String, String> userDatabase = new HashMap<>();
+    private static final Map<String, Ticket> ticketDatabase = new HashMap<>();
+    private static int prnCounter = 1000;
+
+    public static void main(String[] args) {
+        initializeUserDatabase();
+
+        Scanner scanner = new Scanner(System.in);// object we make here ok
+        String username;
+        String password;
+
+        System.out.println("---Welcome to the Train Reservation System---\n");
+
+        do {
+            System.out.print("Register a new username: "); // do...while lopp to perform operation ok
+            username = scanner.nextLine();
+            System.out.print("Choose a password: ");
+            password = scanner.nextLine();
+
+            if (userDatabase.containsKey(username)) {
+                System.out.println("Username already exists. Please choose a different username.");
+            } else {
+                userDatabase.put(username, password);
+                System.out.println("Registration successful!\n");
+                break;
+            }
+        } while (true);
+
+        System.out.print("Enter your username: ");// to take input of user and password ok
+        username = scanner.nextLine();
+        System.out.print("Enter your password: ");
+        password = scanner.nextLine();
+
+        if (authenticateUser(username, password)) {
+            System.out.println("Hey, " + username + " You are logged in successfully\n");
+
+            while (true) {
+                System.out.print("Enter your name: ");
+                String passengerName = scanner.nextLine();
+                System.out.print("Enter your destination: ");
+                String destination = scanner.nextLine();
+                System.out.print("Enter your Starting place: ");
+                String place = scanner.nextLine();
+                System.out.print("Enter ticket amount: ");
+                double ticketAmount = scanner.nextDouble();
+
+                Ticket ticket = new Ticket(passengerName, place, destination, ticketAmount);
+                String prn = generatePRN();
+                ticketDatabase.put(prn, ticket);
+
+                System.out.println("\n--- Details of " + username + "'s ticket: ---\n");
+                System.out.println(
+                        "+------------------+----------------------+------------------+----------------------+");
+                System.out.println(
+                        "|Your PRN:" + prn + "                                                                   |");
+                System.out.println(
+                        "+------------------+----------------------+------------------+----------------------+");
+                System.out.println(
+                        "+------------------+----------------------+------------------+----------------------+");
+                System.out.println(
+                        "| Passenger Name   |   Place              | Destination      | Ticket Amount (Rs.)  |");
+                System.out.println(
+                        "+------------------+----------------------+------------------+----------------------+");
+                System.out.printf("| %-16s | %-20s | %-16s | Rs.%-18.2f|\n", passengerName, place, destination,
+                        ticketAmount);
+                System.out.println(
+                        "+------------------+----------------------+------------------+----------------------+");
+
+                System.out.println("\nPrint the Ticket\n");
+
+                System.out.print("Enter 'OK' to make an instant ticket or 'Exit' to exit: ");
+                String choice = scanner.next();
+
+                if (choice.equalsIgnoreCase("EXIT")) {
+                    break; // Exit the program
+                } else if (choice.equalsIgnoreCase("OK")) {
+                    System.out.print("Enter the PRN number to cancel the ticket: ");
+                    String prnToCancel = scanner.next();
+                    if (ticketDatabase.containsKey(prnToCancel)) {
+                        ticketDatabase.remove(prnToCancel);
+                        System.out.println("Ticket with PRN " + prnToCancel + " has been canceled.\n");
+                    } else {
+                        System.out.println("Ticket with PRN " + prnToCancel + " not found.\n");
+                    }
+                }
+            }
+        } else {
+            System.out.println("\nLogin failed. Invalid credentials.");
+        }
+    }
+
+    private static void initializeUserDatabase() {
+        userDatabase.put("user1", "password1");
+        userDatabase.put("user2", "password2");
+    }
+
+    private static boolean authenticateUser(String username, String password) {
+        String storedPassword = userDatabase.get(username);
+        return storedPassword != null && storedPassword.equals(password);
+    }
+
+    private static String generatePRN() {
+        prnCounter++;
+        return "PRN" + prnCounter;
+    }
+
+    static class Ticket {
+        private String passengerName;
+        private String place;
+        private String destination;
+        private double ticketAmount;
+
+        public Ticket(String passengerName, String place, String destination, double ticketAmount) {
+            this.passengerName = passengerName;
+            this.place = place;
+            this.destination = destination;
+            this.ticketAmount = ticketAmount;
+        }
+    }
+}
+
+// LETS RUN THE CODE HOW ITS WORKS ARE YOU READY !!!!!! TO BOOK YOUR TRAIN
+// TICKET LETS GO-------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>.
 
